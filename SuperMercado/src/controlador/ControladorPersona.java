@@ -14,7 +14,7 @@ import javax.swing.JOptionPane;
 import modelo.CifrarClave;
 import modelo.SQLUsuario;
 import modelo.Usuarios;
-import view.Programa;
+import vista.Programa;
 import vista.IniciarSesion;
 import vista.Inicio;
 import static vista.Inicio.registro;
@@ -49,6 +49,7 @@ public class ControladorPersona implements ActionListener {
         programa.btnBuscar.addActionListener(this);
         programa.btnListaClientes.addActionListener(this);
         programa.btnDelete.addActionListener(this);
+        programa.btnEdit.addActionListener(this);
 
     }
 
@@ -65,6 +66,7 @@ public class ControladorPersona implements ActionListener {
         vistaRegistro.txtcontra2.setText("");
         vistaRegistro.txtemail.setText("");
         vistaRegistro.txtIdentificacion.setText("");
+        
 
     }
 
@@ -75,6 +77,7 @@ public class ControladorPersona implements ActionListener {
         programa.txtContra2.setText("");
         programa.txtCorreo.setText("");
         programa.txtIdentificacion.setText("");
+        programa.txtBuscar.setText("");
 
     }
 
@@ -117,14 +120,23 @@ public class ControladorPersona implements ActionListener {
             }
 
             //Insertamos datos
-            while (rs.next()) {
-                //Object para que acepte cualquier dato
-                Object fila[] = new Object[cantidadColumnas];
-                for (int i = 0; i < cantidadColumnas; i++) {
-                    fila[i] = rs.getObject(i + 1); //i+1 para que no tome el id
+            usuario.setIdentificacion(programa.txtBuscar.getText());
 
-                }
-                modeloTabla.addRow(fila);
+            if (modelo.buscar(usuario)) {
+                programa.txtIdentificacion.setText(String.valueOf(usuario.getIdentificacion()));
+                programa.txtNombre.setText(String.valueOf(usuario.getNombre()));
+                programa.txtUsuario.setText(String.valueOf(usuario.getNombreUsuario()));
+                programa.txtCorreo.setText(String.valueOf(usuario.getCorreo()));
+                this.listarClientes();
+                this.programa.txtContra.setEnabled(false);
+                this.programa.txtContra2.setEnabled(false);
+                this.programa.btnDelete.setEnabled(true);
+
+            } else {
+                this.listarClientes();
+                JOptionPane.showMessageDialog(null, "No existe una persona con esa clave");
+
+                this.limpiarRegistroUsuario();
 
             }
 
@@ -133,7 +145,80 @@ public class ControladorPersona implements ActionListener {
         }
     }
 
-    public void ProgramaHome() {
+    public void listarClientes() {
+        DefaultTableModel modeloTabla = new DefaultTableModel();
+        programa.jTableListar.setModel(modeloTabla);
+
+        //Cargar datos
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            Conexion con = new Conexion();
+            Connection conexion = con.getConnection();
+
+            ps = conexion.prepareStatement("select identificacion,nombre,nombreUsuario,correo from usuario");
+            rs = ps.executeQuery();
+
+            modeloTabla.addColumn("identificacion");
+            modeloTabla.addColumn("nombre");
+            modeloTabla.addColumn("nombreUsuario");
+            modeloTabla.addColumn("correo");
+
+            //Insertamos datos
+            while (rs.next()) {
+                //Object para que acepte cualquier dato
+                Object fila[] = new Object[4];
+                for (int i = 0; i < 4; i++) {
+                    fila[i] = rs.getObject(i + 1); //i+1 para que no tome el id
+
+                }
+                modeloTabla.addRow(fila);
+
+                ////
+                ////
+            }
+
+        } catch (Exception e) {
+            System.out.println("e = " + e);
+        }
+    }
+
+    public void ProgramaHome(Usuarios usuario) {
+
+        if (usuario.getIdTipo_usuario() == 1) {
+            JOptionPane.showMessageDialog(null, "Administrador");
+            this.programa.btnDelete.setEnabled(false);
+            this.programa.txtIdentificacion.setEnabled(false);
+            programa.setVisible(true);
+
+        } else if (usuario.getIdTipo_usuario() == 2) {
+            JOptionPane.showMessageDialog(null, "Usuario");
+            programa.btnSave.setVisible(false);
+            programa.btnEdit.setVisible(false);
+            programa.btnDelete.setVisible(false);
+            programa.btnClear.setVisible(false);
+            programa.txtNombre.setEnabled(false);
+            programa.txtContra.setEnabled(false);
+            programa.txtContra2.setEnabled(false);
+            programa.txtCorreo.setEnabled(false);
+            programa.txtUsuario.setEnabled(false);
+            programa.txtIdentificacion.setEnabled(false);
+            programa.setVisible(true);
+        } else if (usuario.getIdTipo_usuario() == 3) {
+            JOptionPane.showMessageDialog(null, "Cliente");
+            programa.btnSave.setVisible(false);
+            programa.btnEdit.setVisible(false);
+            programa.btnDelete.setVisible(false);
+            programa.btnClear.setVisible(false);
+            programa.txtNombre.setEnabled(false);
+            programa.txtContra.setEnabled(false);
+            programa.txtContra2.setEnabled(false);
+            programa.txtCorreo.setEnabled(false);
+            programa.txtUsuario.setEnabled(false);
+            programa.txtIdentificacion.setEnabled(false);
+            programa.setVisible(true);
+        }
 
         programa.setVisible(true);
     }
@@ -233,11 +318,11 @@ public class ControladorPersona implements ActionListener {
                     //JOptionPane.showMessageDialog(null, "Felicidades acabas de ingresar a Daromitas");
 
 //                this.dispose(); //Cierra la venta de iniciar sesion lllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll
-                    programa.dispose();
-                    Programa programa = new Programa(usuario);
-                    //this.ProgramaHome();
+                    //programa.dispose();
+                    //Programa programa = new Programa(usuario);
+                    this.ProgramaHome(usuario);
 
-                    programa.setVisible(true);
+                    //programa.setVisible(true);
                 } else {
                     JOptionPane.showMessageDialog(null, "Error en las credenciales");
 
@@ -310,48 +395,29 @@ public class ControladorPersona implements ActionListener {
         }
 
         if (ae.getSource() == programa.btnListaClientes) {
+            this.listarClientes();
 
-            DefaultTableModel modeloTabla = new DefaultTableModel();
-            programa.jTableListar.setModel(modeloTabla);
-
-            //Cargar datos
-            PreparedStatement ps = null;
-            ResultSet rs = null;
-
-            try {
-                Conexion con = new Conexion();
-                Connection conexion = con.getConnection();
-
-                ps = conexion.prepareStatement("select identificacion,nombre,nombreUsuario,correo from usuario");
-                rs = ps.executeQuery();
-
-                modeloTabla.addColumn("identificacion");
-                modeloTabla.addColumn("nombre");
-                modeloTabla.addColumn("nombreUsuario");
-                modeloTabla.addColumn("correo");
-
-                //Insertamos datos
-                while (rs.next()) {
-                    //Object para que acepte cualquier dato
-                    Object fila[] = new Object[4];
-                    for (int i = 0; i < 4; i++) {
-                        fila[i] = rs.getObject(i + 1); //i+1 para que no tome el id
-
-                    }
-                    modeloTabla.addRow(fila);
-
-                    ////
-                    ////
-                }
-
-            } catch (Exception e) {
-                System.out.println("e = " + e);
-            }
         }
 
         //Metodo buscar
         if (ae.getSource() == programa.btnBuscar) {
             this.buscar();
+        }
+        if (ae.getSource() == programa.btnEdit) {
+            usuario.setIdentificacion(programa.txtIdentificacion.getText());
+            usuario.setNombre(programa.txtNombre.getText());
+            usuario.setNombreUsuario(programa.txtUsuario.getText());
+            usuario.setCorreo(programa.txtCorreo.getText());
+
+            if (modelo.editar(usuario)) {
+                JOptionPane.showMessageDialog(null, "Registro modificado correctamente");
+                this.limpiarRegistroUsuario();
+                this.listarClientes();
+            } else {
+                JOptionPane.showMessageDialog(null, "Error al modificar el registro");
+                this.limpiarRegistroUsuario();
+                this.listarClientes();
+            }
         }
 
         if (ae.getSource() == programa.btnDelete) {

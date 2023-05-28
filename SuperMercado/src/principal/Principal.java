@@ -3,7 +3,7 @@ package principal;
 import controlador.ControladorPersona;
 import modelo.SQLUsuario;
 import modelo.Usuarios;
-import view.Programa;
+import vista.Programa;
 import vista.IniciarSesion;
 import vista.Inicio;
 import vista.Registro;

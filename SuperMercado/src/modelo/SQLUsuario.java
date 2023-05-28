@@ -144,5 +144,80 @@ public class SQLUsuario {
             }
         }
     }
+    //Buscar
+
+    public boolean buscar(Usuarios usuario) {
+        Conexion con = new Conexion();
+
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        Connection conexion = con.getConnection();
+        try {
+            ps = conexion.prepareStatement("select * from usuario where identificacion=?");
+            ps.setString(1, usuario.getIdentificacion());
+
+            rs = ps.executeQuery();//executeQuery por que va a traer datos de la bd
+
+            if (rs.next()) {
+                usuario.setIdentificacion(rs.getString("identificacion"));
+                usuario.setNombre(rs.getString("nombre"));
+                usuario.setCorreo(rs.getString("correo"));
+                usuario.setNombreUsuario(rs.getString("nombreUsuario"));
+
+                return true;
+            } else {
+                return false;
+            }
+
+        } catch (Exception e) {
+            System.out.println("e = " + e);
+            return false;
+        } //siempre se ejecuta
+        finally {
+            try {
+                conexion.close();
+            } catch (Exception e) {
+                System.out.println("e = " + e);
+
+            }
+        }
+    }
+
+    //Editar
+    public boolean editar(Usuarios usuarios) {
+        Conexion con = new Conexion();
+
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        Connection conexion = con.getConnection();
+        try {
+            ps = conexion.prepareStatement("update  usuario set nombre=?,nombreUsuario=?,correo=? where identificacion=?");
+            ps.setString(1, usuarios.getNombre());
+            ps.setString(2, usuarios.getNombreUsuario());
+            ps.setString(3, usuarios.getCorreo());
+            ps.setString(4, usuarios.getIdentificacion());
+           
+
+            int resultado = ps.executeUpdate();
+
+            if (resultado > 0) {
+                return true;
+            } else {
+                return false;
+            }
+
+        } catch (Exception e) {
+            System.out.println("e = " + e);
+            return false;
+        } //siempre se ejecuta
+        finally {
+            try {
+                conexion.close();
+            } catch (Exception e) {
+                System.out.println("e = " + e);
+
+            }
+        }
+    }
 
 }

@@ -2,58 +2,25 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package view;
+package vista;
 
 import javax.swing.JOptionPane;
 import modelo.Usuarios;
 
+ 
 public class Programa extends javax.swing.JFrame {
 
     /**
      * Creates new form View
      */
-    Usuarios usuarios;
+        Usuarios usuario;
 
     public Programa() {
         initComponents();
-
+        
     }
-
-    public Programa(Usuarios usuarios) {
-        initComponents();
-        setLocationRelativeTo(null);
-        this.usuarios = usuarios;
-
-        //Establecemos los privilegios segun el rol
-        if (usuarios.getIdTipo_usuario() == 1) {
-            JOptionPane.showMessageDialog(null, "Administrador");
-
-        } else if (usuarios.getIdTipo_usuario() == 2) {
-            JOptionPane.showMessageDialog(null, "Usuario");
-            btnSave.setVisible(false);
-            btnEdit.setVisible(false);
-            btnDelete.setVisible(false);
-            btnClear.setVisible(false);
-            txtNombre.setEnabled(false);
-            txtContra.setEnabled(false);
-            txtContra2.setEnabled(false);
-            txtCorreo.setEnabled(false);
-            txtUsuario.setEnabled(false);
-            txtIdentificacion.setEnabled(false);
-        } else if (usuarios.getIdTipo_usuario() == 3) {
-            JOptionPane.showMessageDialog(null, "Cliente");
-            btnSave.setVisible(false);
-            btnEdit.setVisible(false);
-            btnDelete.setVisible(false);
-            btnClear.setVisible(false);
-            txtNombre.setEnabled(false);
-            txtContra.setEnabled(false);
-            txtContra2.setEnabled(false);
-            txtCorreo.setEnabled(false);
-            txtUsuario.setEnabled(false);
-            txtIdentificacion.setEnabled(false);
-        }
-    }
+    
+       
 
     /**
      * This method is called from within the constructor to initialize the form.
