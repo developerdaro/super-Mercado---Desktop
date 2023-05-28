@@ -144,13 +144,13 @@ public class Programa extends javax.swing.JFrame {
         jLabel7.setText("Correo: ");
 
         btnClear.setFont(new java.awt.Font("DejaVu Sans", 0, 14)); // NOI18N
-        btnClear.setText("Clear");
+        btnClear.setText("Limpiar");
 
         btnSave.setFont(new java.awt.Font("DejaVu Sans", 0, 14)); // NOI18N
-        btnSave.setText("Save");
+        btnSave.setText("Guardar");
 
         btnEdit.setFont(new java.awt.Font("DejaVu Sans", 0, 14)); // NOI18N
-        btnEdit.setText("Edit");
+        btnEdit.setText("Editar");
         btnEdit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnEditActionPerformed(evt);
@@ -158,7 +158,7 @@ public class Programa extends javax.swing.JFrame {
         });
 
         btnDelete.setFont(new java.awt.Font("DejaVu Sans", 0, 14)); // NOI18N
-        btnDelete.setText("Delete");
+        btnDelete.setText("Eliminar");
 
         jLabel2.setText("Identificacion: ");
 

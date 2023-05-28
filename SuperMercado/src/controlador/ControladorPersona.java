@@ -55,6 +55,7 @@ public class ControladorPersona implements ActionListener {
 
     public void iniciar() {
         inicio.setTitle("Registro de usuario");
+        inicio.setResizable(false);
         inicio.setLocationRelativeTo(null);
 
     }
@@ -185,7 +186,9 @@ public class ControladorPersona implements ActionListener {
     }
 
     public void ProgramaHome(Usuarios usuario) {
-
+        this.programa.setTitle("DaroMarket");
+        this.programa.setResizable(false);
+        this.programa.setLocationRelativeTo(null);
         if (usuario.getIdTipo_usuario() == 1) {
             JOptionPane.showMessageDialog(null, "Administrador");
             this.programa.btnDelete.setEnabled(false);
@@ -321,6 +324,8 @@ public class ControladorPersona implements ActionListener {
                     //programa.dispose();
                     //Programa programa = new Programa(usuario);
                     this.ProgramaHome(usuario);
+                    this.inicio.setVisible(false);
+                    this.vistaIniciarSesion.setVisible(false);
 
                     //programa.setVisible(true);
                 } else {

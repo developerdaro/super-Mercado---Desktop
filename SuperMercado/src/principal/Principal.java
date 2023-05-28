@@ -22,6 +22,10 @@ public class Principal {
 
         controlador.iniciar();
         vistaInicio.setVisible(true);
+        
+        
+        
+        
 
     }
 
