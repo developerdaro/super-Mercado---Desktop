@@ -4,37 +4,32 @@
  */
 package view;
 
+import javax.swing.JOptionPane;
 import modelo.Usuarios;
 
-/**
- *
- * @author D14
- */
 public class Programa extends javax.swing.JFrame {
 
     /**
      * Creates new form View
      */
-        Usuarios usuario;
+    Usuarios usuarios;
 
     public Programa() {
         initComponents();
+
     }
-    
-      public Programa(Usuarios usuarios){
+
+    public Programa(Usuarios usuarios) {
         initComponents();
         setLocationRelativeTo(null);
-        this.usuario=usuarios;
-        
+        this.usuarios = usuarios;
+
         //Establecemos los privilegios segun el rol
-        
-        
-//        etiquetanombre.setText(usuarios.getNombreUsuario());
-//        etiquetarol.setText(usuarios.getNombreRol());
-        if(usuarios.getIdTipo_usuario()==1){
-            
-        }
-        else if(usuarios.getIdTipo_usuario()==2){
+        if (usuarios.getIdTipo_usuario() == 1) {
+            JOptionPane.showMessageDialog(null, "Administrador");
+
+        } else if (usuarios.getIdTipo_usuario() == 2) {
+            JOptionPane.showMessageDialog(null, "Usuario");
             btnSave.setVisible(false);
             btnEdit.setVisible(false);
             btnDelete.setVisible(false);
@@ -44,6 +39,19 @@ public class Programa extends javax.swing.JFrame {
             txtContra2.setEnabled(false);
             txtCorreo.setEnabled(false);
             txtUsuario.setEnabled(false);
+            txtIdentificacion.setEnabled(false);
+        } else if (usuarios.getIdTipo_usuario() == 3) {
+            JOptionPane.showMessageDialog(null, "Cliente");
+            btnSave.setVisible(false);
+            btnEdit.setVisible(false);
+            btnDelete.setVisible(false);
+            btnClear.setVisible(false);
+            txtNombre.setEnabled(false);
+            txtContra.setEnabled(false);
+            txtContra2.setEnabled(false);
+            txtCorreo.setEnabled(false);
+            txtUsuario.setEnabled(false);
+            txtIdentificacion.setEnabled(false);
         }
     }
 
@@ -81,6 +89,8 @@ public class Programa extends javax.swing.JFrame {
         btnSave = new javax.swing.JButton();
         btnEdit = new javax.swing.JButton();
         btnDelete = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
+        txtIdentificacion = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -125,15 +135,20 @@ public class Programa extends javax.swing.JFrame {
 
         jTableListar.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {},
-                {},
-                {},
-                {}
+
             },
             new String [] {
-
+                "ID", "Nombre", "Usuario", "Correo"
             }
-        ));
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
         jScrollPane1.setViewportView(jTableListar);
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
@@ -178,6 +193,8 @@ public class Programa extends javax.swing.JFrame {
         btnDelete.setFont(new java.awt.Font("DejaVu Sans", 0, 14)); // NOI18N
         btnDelete.setText("Delete");
 
+        jLabel2.setText("Identificacion: ");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -207,14 +224,20 @@ public class Programa extends javax.swing.JFrame {
                                 .addComponent(jLabel6)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(txtNombre)))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel5)
-                            .addComponent(jLabel4))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel5)
+                                    .addComponent(jLabel4)))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addGap(49, 49, 49)
+                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(41, 41, 41)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(txtContra)
-                            .addComponent(txtContra2, javax.swing.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE))))
+                            .addComponent(txtContra2, javax.swing.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE)
+                            .addComponent(txtIdentificacion))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -233,9 +256,13 @@ public class Programa extends javax.swing.JFrame {
                     .addComponent(jLabel5)
                     .addComponent(txtContra2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel7)
-                    .addComponent(txtCorreo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel7)
+                        .addComponent(txtCorreo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel2)
+                        .addComponent(txtIdentificacion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnClear)
@@ -337,6 +364,7 @@ public class Programa extends javax.swing.JFrame {
     public javax.swing.JButton btnListaClientes;
     public javax.swing.JButton btnSave;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -353,6 +381,7 @@ public class Programa extends javax.swing.JFrame {
     public javax.swing.JPasswordField txtContra;
     public javax.swing.JPasswordField txtContra2;
     public javax.swing.JTextField txtCorreo;
+    public javax.swing.JTextField txtIdentificacion;
     public javax.swing.JTextField txtNombre;
     public javax.swing.JTextField txtUsuario;
     // End of variables declaration//GEN-END:variables

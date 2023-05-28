@@ -1,5 +1,10 @@
 package controlador;
 
+import java.sql.Connection;
+import java.sql.ResultSetMetaData;
+
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.DateFormat;
@@ -13,7 +18,8 @@ import view.Programa;
 import vista.IniciarSesion;
 import vista.Inicio;
 import static vista.Inicio.registro;
-
+import javax.swing.table.DefaultTableModel;
+import modelo.Conexion;
 import vista.Registro;
 
 public class ControladorPersona implements ActionListener {
@@ -40,12 +46,15 @@ public class ControladorPersona implements ActionListener {
         vistaIniciarSesion.btnIniciaSesion.addActionListener(this);
         programa.btnSave.addActionListener(this);
         programa.btnClear.addActionListener(this);
+        programa.btnBuscar.addActionListener(this);
+        programa.btnListaClientes.addActionListener(this);
+        programa.btnDelete.addActionListener(this);
 
     }
 
     public void iniciar() {
-        vistaRegistro.setTitle("Registro de usuario");
-        vistaRegistro.setLocationRelativeTo(null);
+        inicio.setTitle("Registro de usuario");
+        inicio.setLocationRelativeTo(null);
 
     }
 
@@ -55,18 +64,77 @@ public class ControladorPersona implements ActionListener {
         vistaRegistro.txtcontra1.setText("");
         vistaRegistro.txtcontra2.setText("");
         vistaRegistro.txtemail.setText("");
+        vistaRegistro.txtIdentificacion.setText("");
 
     }
+
     public void limpiarRegistroUsuario() {
         programa.txtNombre.setText("");
         programa.txtUsuario.setText("");
         programa.txtContra.setText("");
         programa.txtContra2.setText("");
         programa.txtCorreo.setText("");
+        programa.txtIdentificacion.setText("");
 
     }
 
+    public void buscar() {
+
+        DefaultTableModel modeloTabla = new DefaultTableModel();
+        programa.jTableListar.setModel(modeloTabla);
+
+        String campo = programa.txtBuscar.getText();
+        String where = "";
+
+        if (!"".equals(campo)) { //Si el campo no esta vacio
+            where = "where identificacion='" + campo + "'";
+        }
+
+        //Cargar datos
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            Conexion con = new Conexion();
+            Connection conexion = con.getConnection();
+
+            ps = conexion.prepareStatement("select identificacion,nombre,nombreUsuario,correo from usuario " + where);
+            rs = ps.executeQuery();
+            System.out.println(ps);
+            modeloTabla.addColumn("identificacion");
+            modeloTabla.addColumn("nombre");
+            modeloTabla.addColumn("nombreUsuario");
+
+            modeloTabla.addColumn("correo");
+
+            ResultSetMetaData rdMD = rs.getMetaData();//Para qeu tome solo el tamaño de columnas 
+            int cantidadColumnas = rdMD.getColumnCount();
+
+            int anchos[] = {50, 150, 50, 70};//definimos ancho de columnas
+            for (int i = 0; i < cantidadColumnas; i++) { //Asignamos el tamaño
+                programa.jTableListar.getColumnModel().getColumn(i).setPreferredWidth(anchos[i]);
+
+            }
+
+            //Insertamos datos
+            while (rs.next()) {
+                //Object para que acepte cualquier dato
+                Object fila[] = new Object[cantidadColumnas];
+                for (int i = 0; i < cantidadColumnas; i++) {
+                    fila[i] = rs.getObject(i + 1); //i+1 para que no tome el id
+
+                }
+                modeloTabla.addRow(fila);
+
+            }
+
+        } catch (Exception e) {
+            System.out.println("e = " + e);
+        }
+    }
+
     public void ProgramaHome() {
+
         programa.setVisible(true);
     }
 
@@ -83,7 +151,7 @@ public class ControladorPersona implements ActionListener {
             String contrasena = new String(vistaRegistro.txtcontra1.getPassword());
             String confirmarContrasena = new String(vistaRegistro.txtcontra2.getPassword());
 
-            if (vistaRegistro.txtNombr.getText().equals("") || vistaRegistro.txtUsuario.getText().equals("") || vistaRegistro.txtcontra1.equals("") || vistaRegistro.txtcontra2.equals("") || vistaRegistro.txtemail.getText().equals("")) {
+            if (vistaRegistro.txtIdentificacion.getText().equals("") || vistaRegistro.txtNombr.getText().equals("") || vistaRegistro.txtUsuario.getText().equals("") || vistaRegistro.txtcontra1.equals("") || vistaRegistro.txtcontra2.equals("") || vistaRegistro.txtemail.getText().equals("")) {
                 JOptionPane.showMessageDialog(null, "Por favor rellene todos los campos");
             } else {
 
@@ -102,11 +170,13 @@ public class ControladorPersona implements ActionListener {
                             usuario.setContrasena(nuevacontra);
                             usuario.setNombre(vistaRegistro.txtNombr.getText());
                             usuario.setCorreo(vistaRegistro.txtemail.getText());
+                            usuario.setIdentificacion(vistaRegistro.txtIdentificacion.getText());
 
                             usuario.setIdTipo_usuario(2); //rol
 
                             if (sqlUsuario.registrar(usuario)) {
                                 JOptionPane.showMessageDialog(null, "Se ha registrado correctamente");
+                                this.limpiarRegistro();
 
                             } else {
                                 JOptionPane.showMessageDialog(null, "Error en el registro");
@@ -128,12 +198,14 @@ public class ControladorPersona implements ActionListener {
             }
         }
         if (ae.getSource() == inicio.btnregistroincio) {
-
+            vistaRegistro.setTitle("Registro Inicio");
+            vistaRegistro.setLocationRelativeTo(null);
             vistaRegistro.setVisible(true);
 
         }
         if (ae.getSource() == inicio.btnLogin) {
-
+            vistaIniciarSesion.setTitle("Iniciar Sesion");
+            vistaIniciarSesion.setLocationRelativeTo(null);
             vistaIniciarSesion.setVisible(true);
 
         }
@@ -161,11 +233,14 @@ public class ControladorPersona implements ActionListener {
                     //JOptionPane.showMessageDialog(null, "Felicidades acabas de ingresar a Daromitas");
 
 //                this.dispose(); //Cierra la venta de iniciar sesion lllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll
+                    programa.dispose();
                     Programa programa = new Programa(usuario);
-                    this.ProgramaHome();
-                    this.limpiarRegistro();
+                    //this.ProgramaHome();
+
+                    programa.setVisible(true);
                 } else {
                     JOptionPane.showMessageDialog(null, "Error en las credenciales");
+
                 }
             }
 
@@ -200,12 +275,14 @@ public class ControladorPersona implements ActionListener {
                             usuario.setContrasena(nuevacontra);
                             usuario.setNombre(programa.txtNombre.getText());
                             usuario.setCorreo(programa.txtCorreo.getText());
+                            usuario.setIdentificacion(programa.txtIdentificacion.getText());
 
                             usuario.setIdTipo_usuario(2); //rol
 
                             if (sqlUsuario.registrar(usuario)) {
                                 JOptionPane.showMessageDialog(null, "Se ha registrado correctamente");
                                 this.limpiarRegistroUsuario();
+                                this.buscar();
 
                             } else {
                                 JOptionPane.showMessageDialog(null, "Error en el registro");
@@ -226,10 +303,67 @@ public class ControladorPersona implements ActionListener {
 
             }
         }
-        
+
         //Metodo para limpiar
-        if (ae.getSource()== programa.btnClear){
+        if (ae.getSource() == programa.btnClear) {
             this.limpiarRegistroUsuario();
+        }
+
+        if (ae.getSource() == programa.btnListaClientes) {
+
+            DefaultTableModel modeloTabla = new DefaultTableModel();
+            programa.jTableListar.setModel(modeloTabla);
+
+            //Cargar datos
+            PreparedStatement ps = null;
+            ResultSet rs = null;
+
+            try {
+                Conexion con = new Conexion();
+                Connection conexion = con.getConnection();
+
+                ps = conexion.prepareStatement("select identificacion,nombre,nombreUsuario,correo from usuario");
+                rs = ps.executeQuery();
+
+                modeloTabla.addColumn("identificacion");
+                modeloTabla.addColumn("nombre");
+                modeloTabla.addColumn("nombreUsuario");
+                modeloTabla.addColumn("correo");
+
+                //Insertamos datos
+                while (rs.next()) {
+                    //Object para que acepte cualquier dato
+                    Object fila[] = new Object[4];
+                    for (int i = 0; i < 4; i++) {
+                        fila[i] = rs.getObject(i + 1); //i+1 para que no tome el id
+
+                    }
+                    modeloTabla.addRow(fila);
+
+                    ////
+                    ////
+                }
+
+            } catch (Exception e) {
+                System.out.println("e = " + e);
+            }
+        }
+
+        //Metodo buscar
+        if (ae.getSource() == programa.btnBuscar) {
+            this.buscar();
+        }
+
+        if (ae.getSource() == programa.btnDelete) {
+            usuario.setIdentificacion(programa.txtBuscar.getText());
+
+            if (modelo.eliminar(usuario)) {
+                JOptionPane.showMessageDialog(null, "Registro elimiado correctamente");
+                this.limpiarRegistroUsuario();
+            } else {
+                JOptionPane.showMessageDialog(null, "Error al eliminar el registro");
+                this.limpiarRegistroUsuario();
+            }
         }
 
         //

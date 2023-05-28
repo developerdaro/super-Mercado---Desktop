@@ -2,7 +2,6 @@ package modelo;
 
 public class Usuarios {
     
-    private int id;
     private String NombreUsuario;
     private String contrasena;
     private String nombre;
@@ -10,14 +9,9 @@ public class Usuarios {
     private String ultima_sesion;
     private int idTipo_usuario;
     private String nombreRol;
+    private String identificacion;
 
-    public int getId() {
-        return id;
-    }
 
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public String getNombreUsuario() {
         return NombreUsuario;
@@ -73,6 +67,14 @@ public class Usuarios {
 
     public void setNombreRol(String nombreRol) {
         this.nombreRol = nombreRol;
+    }
+
+    public String getIdentificacion() {
+        return identificacion;
+    }
+
+    public void setIdentificacion(String identificacion) {
+        this.identificacion = identificacion;
     }
     
     
