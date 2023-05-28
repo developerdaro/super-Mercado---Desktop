@@ -11,14 +11,13 @@ public class Principal {
 
     public static void main(String[] args) {
    
-        
         IniciarSesion vistaIniciarSesion=new IniciarSesion();
         Inicio vistaInicio = new vista.Inicio();
         Registro vistaRegistro = new Registro();
         Usuarios usuario = new Usuarios();
         SQLUsuario modelo = new SQLUsuario();
 
-        ControladorPersona controlador=new ControladorPersona(vistaRegistro,vistaInicio,usuario, modelo);
+        ControladorPersona controlador=new ControladorPersona(vistaRegistro,vistaInicio,vistaIniciarSesion,usuario, modelo);
 
         controlador.iniciar();
         vistaInicio.setVisible(true);

@@ -23,15 +23,18 @@ public class ControladorPersona implements ActionListener {
     private Usuarios usuario;
     private SQLUsuario modelo;
 
-    public ControladorPersona(Registro vistaRegistro, Inicio inicio, Usuarios usuario, SQLUsuario modelo) {
+    public ControladorPersona(Registro vistaRegistro, Inicio inicio,IniciarSesion vistaIniciarSesion,Usuarios usuario, SQLUsuario modelo) {
         this.vistaRegistro = vistaRegistro;
         this.inicio = inicio;
-
+        this.vistaIniciarSesion=vistaIniciarSesion;
+        
         this.usuario = usuario;
         this.modelo = modelo;
 
         vistaRegistro.btnRegistro.addActionListener(this);
         inicio.btnregistroincio.addActionListener(this);
+        inicio.btnLogin.addActionListener(this);
+        vistaIniciarSesion.btnIniciaSesion.addActionListener(this);
 
     }
 
@@ -113,39 +116,45 @@ public class ControladorPersona implements ActionListener {
                 vistaRegistro.setVisible(true);
             
         }
+        if (ae.getSource() == inicio.btnLogin) {
+          
+               
+                vistaIniciarSesion.setVisible(true);
+            
+        }
 
 //        //Login
-//        if (ae.getSource() == vistaIniciarSesion.btnIniciaSesion) {
-//
-//            //iniciar sesion
-//            Usuarios usuario = new Usuarios();
-//            SQLUsuario sqlUsuario = new SQLUsuario();
-//
-//            Date date = new Date();
-//            DateFormat fechaHora = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//
-//            String contrasena = new String(vistaIniciarSesion.txtcontraLogin.getPassword());
-//
-//            if (vistaIniciarSesion.txtUSuarioLogin.getText().equals("") || contrasena.equals("")) {
-//                JOptionPane.showMessageDialog(null, "Por favor rellene todos los campos");
-//            } else {
-//                String nuevaContrasena = CifrarClave.md5(contrasena);
-//                usuario.setNombreUsuario(vistaIniciarSesion.txtUSuarioLogin.getText());
-//                usuario.setContrasena(nuevaContrasena);
-//                usuario.setUltima_sesion(fechaHora.format(date));
-//                if (sqlUsuario.iniciarsesion(usuario)) {
-//                    //JOptionPane.showMessageDialog(null, "Felicidades acabas de ingresar a Daromitas");
-//                    
-////                this.dispose(); //Cierra la venta de iniciar sesion
-//                    Programa programa = new Programa(usuario);
-//                    programa.setVisible(true);
-//                } else {
-//                    JOptionPane.showMessageDialog(null, "Error en las credenciales");
-//                }
-//            }
-//
-//        }
-//      
+        if (ae.getSource() == vistaIniciarSesion.btnIniciaSesion) {
+
+            //iniciar sesion
+            Usuarios usuario = new Usuarios();
+            SQLUsuario sqlUsuario = new SQLUsuario();
+
+            Date date = new Date();
+            DateFormat fechaHora = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+            String contrasena = new String(vistaIniciarSesion.txtcontraLogin.getPassword());
+
+            if (vistaIniciarSesion.txtUSuarioLogin.getText().equals("") || contrasena.equals("")) {
+                JOptionPane.showMessageDialog(null, "Por favor rellene todos los campos");
+            } else {
+                String nuevaContrasena = CifrarClave.md5(contrasena);
+                usuario.setNombreUsuario(vistaIniciarSesion.txtUSuarioLogin.getText());
+                usuario.setContrasena(nuevaContrasena);
+                usuario.setUltima_sesion(fechaHora.format(date));
+                if (sqlUsuario.iniciarsesion(usuario)) {
+                    //JOptionPane.showMessageDialog(null, "Felicidades acabas de ingresar a Daromitas");
+                    
+//                this.dispose(); //Cierra la venta de iniciar sesion
+                    Programa programa = new Programa(usuario);
+                    programa.setVisible(true);
+                } else {
+                    JOptionPane.showMessageDialog(null, "Error en las credenciales");
+                }
+            }
+
+        }
+      
     }
 
 }
